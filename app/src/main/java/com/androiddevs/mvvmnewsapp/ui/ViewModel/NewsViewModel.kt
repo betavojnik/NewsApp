@@ -2,7 +2,9 @@ package com.androiddevs.mvvmnewsapp.ui.ViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewModelScope
+import com.androiddevs.mvvmnewsapp.ui.model.Article
 import com.androiddevs.mvvmnewsapp.ui.model.NewsResponse
 import com.androiddevs.mvvmnewsapp.ui.repository.NewsRepository
 import com.androiddevs.mvvmnewsapp.ui.util.Resource
@@ -53,7 +55,7 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
-    private fun handleBreakingSearchResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
+    private fun handelSearchNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
 
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
@@ -62,5 +64,15 @@ class NewsViewModel(
         }
 
         return Resource.Error(response.message())
+    }
+
+    fun saveArticale(article: Article) = viewModelScope.launch {
+        newsRepository.upsert(article)
+    }
+
+    fun getSavedNews() = newsRepository.getSavedNews()
+
+    fun deleteArticle(article: Article) = viewModelScope.launch {
+        newsRepository.deleteArticale(article)
     }
 }
